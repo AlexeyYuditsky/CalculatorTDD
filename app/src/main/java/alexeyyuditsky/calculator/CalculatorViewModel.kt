@@ -17,13 +17,41 @@ class CalculatorViewModel : ViewModel(), CalculatorActions {
 
     override fun clickZero() {
         if (addToLeft) {
-            left += "0"
+            if (left != "0") {
+                left += "0"
+                mutableState.update { state ->
+                    val input = left
+                    state.copy(input = input)
+                }
+            }
+        } else {
+            if (right != "0") {
+                right += "0"
+                mutableState.update { state ->
+                    val input = "$left+$right"
+                    state.copy(input = input)
+                }
+            }
+        }
+    }
+
+    override fun clickOne() {
+        if (addToLeft) {
+            if (left == "0") {
+                left = "1"
+            } else {
+                left += "1"
+            }
             mutableState.update { state ->
                 val input = left
                 state.copy(input = input)
             }
         } else {
-            right += "0"
+            if (right == "0") {
+                right = "1"
+            } else {
+                right += "1"
+            }
             mutableState.update { state ->
                 val input = "$left+$right"
                 state.copy(input = input)
@@ -31,19 +59,27 @@ class CalculatorViewModel : ViewModel(), CalculatorActions {
         }
     }
 
-    override fun clickOne() {
-        left += "1"
-        mutableState.update { state ->
-            val input = left
-            state.copy(input = input)
-        }
-    }
-
     override fun clickTwo() {
-        right += "2"
-        mutableState.update { state ->
-            val input = "$left+$right"
-            state.copy(input = input)
+        if (addToLeft) {
+            if (left == "0") {
+                left = "2"
+            } else {
+                left += "2"
+            }
+            mutableState.update { state ->
+                val input = left
+                state.copy(input = input)
+            }
+        } else {
+            if (right == "0") {
+                right = "2"
+            } else {
+                right += "2"
+            }
+            mutableState.update { state ->
+                val input = "$left+$right"
+                state.copy(input = input)
+            }
         }
     }
 

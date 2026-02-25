@@ -15,59 +15,92 @@ class UiTest {
     private val calculatorPage = CalculatorPage(composeTestRule)
 
     @Test
-    fun sum_of_two_numbers() {
-        calculatorPage.clickOne()
-        calculatorPage.assertInput(expected = "1")
+    fun sum_of_two_numbers() = with(calculatorPage) {
+        clickOne()
+        assertInput(expected = "1")
 
-        calculatorPage.clickPlus()
-        calculatorPage.assertInput(expected = "1+")
+        clickPlus()
+        assertInput(expected = "1+")
 
-        calculatorPage.clickTwo()
-        calculatorPage.assertInput(expected = "1+2")
+        clickTwo()
+        assertInput(expected = "1+2")
 
-        calculatorPage.clickEquals()
-        calculatorPage.assertInput(expected = "1+2")
-        calculatorPage.assertResult(expected = "3")
+        clickEquals()
+        assertInput(expected = "1+2")
+        assertResult(expected = "3")
     }
 
     @Test
-    fun sum_of_two_numbers_corner_case() {
-        calculatorPage.clickOne()
-        calculatorPage.assertInput(expected = "1")
+    fun sum_of_two_numbers_corner_case() = with(calculatorPage) {
+        clickOne()
+        assertInput(expected = "1")
 
         var expected = "1"
         repeat(9) {
-            calculatorPage.clickZero()
+            clickZero()
             expected += 0
-            calculatorPage.assertInput(expected = expected)
+            assertInput(expected = expected)
         }
-        calculatorPage.assertInput(expected = "1000000000")
+        assertInput(expected = "1000000000")
 
-        calculatorPage.clickPlus()
-        calculatorPage.assertInput(expected = "1000000000+")
+        clickPlus()
+        assertInput(expected = "1000000000+")
 
-        calculatorPage.clickTwo()
-        calculatorPage.assertInput(expected = "1000000000+2")
+        clickTwo()
+        assertInput(expected = "1000000000+2")
 
         expected = "1000000000+2"
         repeat(9) {
-            calculatorPage.clickZero()
+            clickZero()
             expected += 0
-            calculatorPage.assertInput(expected = expected)
+            assertInput(expected = expected)
         }
-        calculatorPage.assertInput(expected = "1000000000+2000000000")
+        assertInput(expected = "1000000000+2000000000")
 
-        calculatorPage.clickEquals()
-        calculatorPage.assertInput(expected = "1000000000+2000000000")
-        calculatorPage.assertResult(expected = "3000000000")
+        clickEquals()
+        assertInput(expected = "1000000000+2000000000")
+        assertResult(expected = "3000000000")
     }
 
     @Test
-    fun prevent_multiple_zeros() {
-        calculatorPage.clickZero()
-        calculatorPage.assertInput(expected = "0")
+    fun prevent_multiple_zeros() = with(calculatorPage) {
+        repeat(10) {
+            clickZero()
+            assertInput(expected = "0")
+        }
 
-        calculatorPage.clickZero()
-        calculatorPage.assertInput(expected = "0")
+        clickPlus()
+        assertInput(expected = "0+")
+
+        repeat(10) {
+            clickZero()
+            assertInput(expected = "0+0")
+        }
+
+        clickEquals()
+        assertInput(expected = "0+0")
+        assertResult(expected = "0")
+    }
+
+    @Test
+    fun prevent_leading_zeros() = with(calculatorPage) {
+        clickZero()
+        assertInput(expected = "0")
+
+        clickOne()
+        assertInput(expected = "1")
+
+        clickPlus()
+        assertInput(expected = "1+")
+
+        clickZero()
+        assertInput(expected = "1+0")
+
+        clickTwo()
+        assertInput(expected = "1+2")
+
+        clickEquals()
+        assertInput(expected = "1+2")
+        assertResult(expected = "3")
     }
 }

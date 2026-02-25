@@ -65,10 +65,40 @@ class MainViewModelTest {
 
     @Test
     fun prevent_multiple_zeros() {
-        viewModel.clickZero()
-        assertEquals("0", state.value.input)
+        repeat(10) {
+            viewModel.clickZero()
+            assertEquals("0", state.value.input)
+        }
+        viewModel.clickPlus()
+        assertEquals("0+", state.value.input)
+        repeat(10) {
+            viewModel.clickZero()
+            assertEquals("0+0", state.value.input)
+        }
+        viewModel.clickEquals()
+        assertEquals("0+0", state.value.input)
+        assertEquals("0", state.value.result)
+    }
 
-        viewModel.clickZero()
-        assertEquals("0", state.value.input)
+    @Test
+    fun prevent_leading_zeros() {
+            viewModel.clickZero()
+            assertEquals("0", state.value.input)
+
+            viewModel.clickOne()
+            assertEquals("1", state.value.input)
+
+            viewModel.clickPlus()
+            assertEquals("1+", state.value.input)
+
+            viewModel.clickZero()
+            assertEquals("1+0", state.value.input)
+
+            viewModel.clickTwo()
+            assertEquals("1+2", state.value.input)
+
+            viewModel.clickEquals()
+            assertEquals("1+2", state.value.input)
+            assertEquals("3", state.value.result)
     }
 }
