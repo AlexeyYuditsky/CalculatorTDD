@@ -8,27 +8,27 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.performClick
 
-class CalculatorPage(composeTestRule: ComposeContentTestRule) {
+class CalculatorPage(rule: ComposeContentTestRule) {
 
-    private val zero = composeTestRule.onNode(
+    private val zero = rule.onNode(
         hasTestTag("zero") and hasText("0") and hasClickAction()
     )
-    private val one = composeTestRule.onNode(
+    private val one = rule.onNode(
         hasTestTag("one") and hasText("1") and hasClickAction()
     )
-    private val two = composeTestRule.onNode(
+    private val two = rule.onNode(
         hasTestTag("two") and hasText("2") and hasClickAction()
     )
-    private val plus = composeTestRule.onNode(
+    private val plus = rule.onNode(
         hasTestTag("plus") and hasText("+") and hasClickAction()
     )
-    private val equals = composeTestRule.onNode(
+    private val equals = rule.onNode(
         hasTestTag("equals") and hasText("=") and hasClickAction()
     )
-    private val input = composeTestRule.onNode(
+    private val input = rule.onNode(
         hasTestTag("input") and hasNoClickAction()
     )
-    private val result = composeTestRule.onNode(
+    private val result = rule.onNode(
         hasTestTag("result") and hasNoClickAction()
     )
 

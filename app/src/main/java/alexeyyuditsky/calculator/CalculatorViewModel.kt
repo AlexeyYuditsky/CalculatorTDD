@@ -4,11 +4,12 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import java.math.BigInteger
 
-class CalculatorViewModel : ViewModel(), CalculatorActions {
+class CalculatorViewModel(
+    private val calculator: Calculator = Calculator.Base(),
+) : ViewModel(), Actions {
 
-    private val mutableState = MutableStateFlow(CalculatorState())
+    private val mutableState = MutableStateFlow(State())
     val state = mutableState.asStateFlow()
 
     private var addToLeft = true
@@ -84,16 +85,34 @@ class CalculatorViewModel : ViewModel(), CalculatorActions {
     }
 
     override fun clickPlus() {
-        addToLeft = false
         mutableState.update { state ->
-            val input = "${state.input}+"
-            state.copy(input = input)
+            if (state.input.isEmpty() || state.input.endsWith("+")) {
+                return
+            } else if (left.isNotEmpty() && right.isNotEmpty()) {
+                left = calculator.sum(left, right)
+                right = ""
+                val input = "${left}+"
+                state.copy(
+                    input = input,
+                    result = ""
+                )
+            } else {
+                addToLeft = false
+                val input = "${state.input}+"
+                state.copy(input = input)
+            }
         }
     }
 
     override fun clickEquals() {
         mutableState.update { state ->
-            val result = (BigInteger(left) + BigInteger(right)).toString()
+            if (
+                left.isEmpty() ||
+                right.isEmpty() ||
+                state.result.isNotEmpty()
+            ) return
+
+            val result = calculator.sum(left, right)
             state.copy(result = result)
         }
     }

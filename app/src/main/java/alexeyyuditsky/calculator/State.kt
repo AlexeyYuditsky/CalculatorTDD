@@ -1,6 +1,6 @@
 package alexeyyuditsky.calculator
 
-data class CalculatorState(
+data class State(
     val input: String = "",
     val result: String = "",
 )

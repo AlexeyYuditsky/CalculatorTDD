@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun CalculatorScreen(
-    state: CalculatorState,
-    actions: CalculatorActions,
+    state: State,
+    actions: Actions,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
@@ -78,8 +78,8 @@ fun CalculatorScreen(
 @Composable
 fun PreviewCalculatorScreen() = CalculatorTheme {
     CalculatorScreen(
-        state = CalculatorState(input = "1+2", result = "3"),
-        actions = CalculatorActions.Empty
+        state = State(input = "1+2", result = "3"),
+        actions = Actions.Empty
     )
 }
 
