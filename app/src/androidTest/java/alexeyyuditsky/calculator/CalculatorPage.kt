@@ -22,6 +22,9 @@ class CalculatorPage(rule: ComposeContentTestRule) {
     private val plus = rule.onNode(
         hasTestTag("plus") and hasText("+") and hasClickAction()
     )
+    private val minus = rule.onNode(
+        hasTestTag("minus") and hasText("-") and hasClickAction()
+    )
     private val equals = rule.onNode(
         hasTestTag("equals") and hasText("=") and hasClickAction()
     )
@@ -39,6 +42,8 @@ class CalculatorPage(rule: ComposeContentTestRule) {
     fun clickTwo() = two.performClick()
 
     fun clickPlus() = plus.performClick()
+
+    fun clickMinus() = minus.performClick()
 
     fun clickEquals() = equals.performClick()
 

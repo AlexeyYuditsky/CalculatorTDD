@@ -97,7 +97,7 @@ class UiTest {
     }
 
     @Test
-    fun prevent_multiple_zeros(): Unit = with(calculatorPage) {
+    fun prevent_multiple_zeros_plus_operation(): Unit = with(calculatorPage) {
         repeat(3) {
             clickZero()
             assertInput(expected = "0")
@@ -304,5 +304,60 @@ class UiTest {
             assertInput(expected = "2+1")
             assertResult(expected = "3")
         }
+    }
+
+    @Test
+    fun diff_of_two_numbers(): Unit = with(calculatorPage) {
+        clickOne()
+        assertInput(expected = "1")
+
+        clickMinus()
+        assertInput(expected = "1-")
+
+        clickTwo()
+        assertInput(expected = "1-2")
+
+        clickEquals()
+        assertInput(expected = "1-2")
+        assertResult(expected = "-1")
+    }
+
+    @Test
+    fun minus_sign_ahead(): Unit = with(calculatorPage) {
+        clickMinus()
+        assertInput(expected = "-")
+
+        clickOne()
+        assertInput(expected = "-1")
+
+        clickMinus()
+        assertInput(expected = "-1-")
+
+        clickTwo()
+        assertInput(expected = "-1-2")
+
+        clickEquals()
+        assertInput(expected = "-1-2")
+        assertResult(expected = "-3")
+    }
+
+    @Test
+    fun prevent_multiple_zeros_minus_operation(): Unit = with(calculatorPage) {
+        repeat(3) {
+            clickZero()
+            assertInput(expected = "0")
+        }
+
+        clickMinus()
+        assertInput(expected = "0-")
+
+        repeat(3) {
+            clickZero()
+            assertInput(expected = "0-0")
+        }
+
+        clickEquals()
+        assertInput(expected = "0-0")
+        assertResult(expected = "0")
     }
 }

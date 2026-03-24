@@ -7,6 +7,7 @@ interface Actions {
     fun clickTwo()
 
     fun clickPlus()
+    fun clickMinus()
     fun clickEquals()
 
     object Empty : Actions {
@@ -14,6 +15,7 @@ interface Actions {
         override fun clickOne() {}
         override fun clickTwo() {}
         override fun clickPlus() {}
+        override fun clickMinus() {}
         override fun clickEquals() {}
     }
 }

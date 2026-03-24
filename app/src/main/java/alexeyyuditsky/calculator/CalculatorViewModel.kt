@@ -15,22 +15,21 @@ class CalculatorViewModel(
     private var addToLeft = true
     private var left = ""
     private var right = ""
+    private var operation = ""
 
     override fun clickZero() {
         if (addToLeft) {
             if (left != "0") {
                 left += "0"
                 mutableState.update { state ->
-                    val input = left
-                    state.copy(input = input)
+                    state.copy(input = left)
                 }
             }
         } else {
             if (right != "0") {
                 right += "0"
                 mutableState.update { state ->
-                    val input = "$left+$right"
-                    state.copy(input = input)
+                    state.copy(input = "$left$operation$right")
                 }
             }
         }
@@ -44,8 +43,7 @@ class CalculatorViewModel(
                 left += "1"
             }
             mutableState.update { state ->
-                val input = left
-                state.copy(input = input)
+                state.copy(input = left)
             }
         } else {
             if (right == "0") {
@@ -54,8 +52,7 @@ class CalculatorViewModel(
                 right += "1"
             }
             mutableState.update { state ->
-                val input = "$left+$right"
-                state.copy(input = input)
+                state.copy(input = "$left$operation$right")
             }
         }
     }
@@ -68,8 +65,7 @@ class CalculatorViewModel(
                 left += "2"
             }
             mutableState.update { state ->
-                val input = left
-                state.copy(input = input)
+                state.copy(input = left)
             }
         } else {
             if (right == "0") {
@@ -78,28 +74,48 @@ class CalculatorViewModel(
                 right += "2"
             }
             mutableState.update { state ->
-                val input = "$left+$right"
-                state.copy(input = input)
+                state.copy(input = "$left$operation$right")
             }
         }
     }
 
     override fun clickPlus() {
+        operation = "+"
         mutableState.update { state ->
             if (state.input.isEmpty() || state.input.endsWith("+")) {
                 return
             } else if (left.isNotEmpty() && right.isNotEmpty()) {
-                left = calculator.sum(left, right)
+                left = calculator.plus(left, right)
                 right = ""
-                val input = "${left}+"
                 state.copy(
-                    input = input,
+                    input = "${left}+",
                     result = ""
                 )
             } else {
                 addToLeft = false
-                val input = "${state.input}+"
-                state.copy(input = input)
+                state.copy(input = "${state.input}+")
+            }
+        }
+    }
+
+    override fun clickMinus() {
+        operation = "-"
+        mutableState.update { state ->
+            if (state.input.isEmpty()) {
+                left = "-"
+                state.copy(input = left)
+            } else if (state.input.endsWith("-")) {
+                return
+            } else if (left.isNotEmpty() && right.isNotEmpty()) {
+                left = calculator.minus(left, right)
+                right = ""
+                state.copy(
+                    input = "${left}-",
+                    result = ""
+                )
+            } else {
+                addToLeft = false
+                state.copy(input = "${state.input}-")
             }
         }
     }
@@ -112,7 +128,12 @@ class CalculatorViewModel(
                 state.result.isNotEmpty()
             ) return
 
-            val result = calculator.sum(left, right)
+            val result = when (operation) {
+                "+" -> calculator.plus(left, right)
+                "-" -> calculator.minus(left, right)
+                else -> throw IllegalStateException()
+            }
+            operation = ""
             state.copy(result = result)
         }
     }

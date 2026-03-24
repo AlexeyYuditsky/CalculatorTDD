@@ -66,6 +66,11 @@ fun CalculatorScreen(
                 onClick = actions::clickPlus
             )
             CalculatorButton(
+                text = "-",
+                testTag = "minus",
+                onClick = actions::clickMinus
+            )
+            CalculatorButton(
                 text = "=",
                 testTag = "equals",
                 onClick = actions::clickEquals
