@@ -1,7 +1,6 @@
 package alexeyyuditsky.calculator
 
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 
 class MainViewModelTest {
@@ -9,304 +8,298 @@ class MainViewModelTest {
     private val calculator = FakeCalculator()
     private val viewModel = CalculatorViewModel(calculator = calculator)
 
-    @Before
-    fun setup() = with(viewModel) {
-        assertEquals("", state.value.input)
-        assertEquals("", state.value.result)
-    }
-
     @Test
     fun sum_of_two_numbers() = with(viewModel) {
         clickOne()
-        assertEquals("1", state.value.input)
+        assertEquals("1", calculatorState.value.input)
 
         clickPlus()
-        assertEquals("1+", state.value.input)
+        assertEquals("1+", calculatorState.value.input)
 
         clickTwo()
-        assertEquals("1+2", state.value.input)
+        assertEquals("1+2", calculatorState.value.input)
 
         clickEquals()
-        assertEquals("1+2", state.value.input)
-        assertEquals("3", state.value.result)
+        assertEquals("1+2", calculatorState.value.input)
+        assertEquals("3", calculatorState.value.result)
     }
 
     @Test
     fun sum_of_numbers_more_complex() = with(viewModel) {
         clickTwo()
-        assertEquals("2", state.value.input)
+        assertEquals("2", calculatorState.value.input)
 
         clickOne()
-        assertEquals("21", state.value.input)
+        assertEquals("21", calculatorState.value.input)
 
         clickZero()
-        assertEquals("210", state.value.input)
+        assertEquals("210", calculatorState.value.input)
 
         clickZero()
-        assertEquals("2100", state.value.input)
+        assertEquals("2100", calculatorState.value.input)
 
         clickPlus()
-        assertEquals("2100+", state.value.input)
+        assertEquals("2100+", calculatorState.value.input)
 
         clickOne()
-        assertEquals("2100+1", state.value.input)
+        assertEquals("2100+1", calculatorState.value.input)
 
         clickTwo()
-        assertEquals("2100+12", state.value.input)
+        assertEquals("2100+12", calculatorState.value.input)
 
         clickZero()
-        assertEquals("2100+120", state.value.input)
+        assertEquals("2100+120", calculatorState.value.input)
 
         clickZero()
-        assertEquals("2100+1200", state.value.input)
+        assertEquals("2100+1200", calculatorState.value.input)
 
         clickEquals()
-        assertEquals("2100+1200", state.value.input)
-        assertEquals("3300", state.value.result)
+        assertEquals("2100+1200", calculatorState.value.input)
+        assertEquals("3300", calculatorState.value.result)
     }
 
     @Test
     fun sum_of_two_numbers_corner_case() = with(viewModel) {
         clickOne()
-        assertEquals("1", state.value.input)
+        assertEquals("1", calculatorState.value.input)
 
         var expected = "1"
         repeat(9) {
             clickZero()
             expected += 0
-            assertEquals(expected, state.value.input)
+            assertEquals(expected, calculatorState.value.input)
         }
-        assertEquals("1000000000", state.value.input)
+        assertEquals("1000000000", calculatorState.value.input)
 
         clickPlus()
-        assertEquals("1000000000+", state.value.input)
+        assertEquals("1000000000+", calculatorState.value.input)
 
         clickTwo()
-        assertEquals("1000000000+2", state.value.input)
+        assertEquals("1000000000+2", calculatorState.value.input)
 
         expected = "1000000000+2"
         repeat(9) {
             clickZero()
             expected += 0
-            assertEquals(expected, state.value.input)
+            assertEquals(expected, calculatorState.value.input)
         }
-        assertEquals("1000000000+2000000000", state.value.input)
+        assertEquals("1000000000+2000000000", calculatorState.value.input)
 
         clickEquals()
-        assertEquals("1000000000+2000000000", state.value.input)
-        assertEquals("3000000000", state.value.result)
+        assertEquals("1000000000+2000000000", calculatorState.value.input)
+        assertEquals("3000000000", calculatorState.value.result)
     }
 
     @Test
     fun prevent_multiple_zeros_plus_operation() = with(viewModel) {
         repeat(3) {
             clickZero()
-            assertEquals("0", state.value.input)
+            assertEquals("0", calculatorState.value.input)
         }
 
         clickPlus()
-        assertEquals("0+", state.value.input)
+        assertEquals("0+", calculatorState.value.input)
 
         repeat(3) {
             clickZero()
-            assertEquals("0+0", state.value.input)
+            assertEquals("0+0", calculatorState.value.input)
         }
 
         clickEquals()
-        assertEquals("0+0", state.value.input)
-        assertEquals("0", state.value.result)
+        assertEquals("0+0", calculatorState.value.input)
+        assertEquals("0", calculatorState.value.result)
     }
 
     @Test
     fun prevent_leading_zeros() = with(viewModel) {
         clickZero()
-        assertEquals("0", state.value.input)
+        assertEquals("0", calculatorState.value.input)
 
         clickOne()
-        assertEquals("1", state.value.input)
+        assertEquals("1", calculatorState.value.input)
 
         clickPlus()
-        assertEquals("1+", state.value.input)
+        assertEquals("1+", calculatorState.value.input)
 
         clickZero()
-        assertEquals("1+0", state.value.input)
+        assertEquals("1+0", calculatorState.value.input)
 
         clickTwo()
-        assertEquals("1+2", state.value.input)
+        assertEquals("1+2", calculatorState.value.input)
 
         clickEquals()
-        assertEquals("1+2", state.value.input)
-        assertEquals("3", state.value.result)
+        assertEquals("1+2", calculatorState.value.input)
+        assertEquals("3", calculatorState.value.result)
     }
 
     @Test
     fun prevent_multiple_plus_operation() = with(viewModel) {
         clickTwo()
-        assertEquals("2", state.value.input)
+        assertEquals("2", calculatorState.value.input)
 
         repeat(3) {
             clickPlus()
-            assertEquals("2+", state.value.input)
+            assertEquals("2+", calculatorState.value.input)
         }
 
         clickOne()
-        assertEquals("2+1", state.value.input)
+        assertEquals("2+1", calculatorState.value.input)
 
         clickEquals()
-        assertEquals("2+1", state.value.input)
-        assertEquals("3", state.value.result)
+        assertEquals("2+1", calculatorState.value.input)
+        assertEquals("3", calculatorState.value.result)
     }
 
     @Test
     fun prevent_leading_pluses() = with(viewModel) {
         repeat(3) {
             clickPlus()
-            assertEquals("", state.value.input)
+            assertEquals("", calculatorState.value.input)
         }
 
         clickTwo()
-        assertEquals("2", state.value.input)
+        assertEquals("2", calculatorState.value.input)
 
         clickPlus()
-        assertEquals("2+", state.value.input)
+        assertEquals("2+", calculatorState.value.input)
 
         clickOne()
-        assertEquals("2+1", state.value.input)
+        assertEquals("2+1", calculatorState.value.input)
 
         clickEquals()
-        assertEquals("2+1", state.value.input)
-        assertEquals("3", state.value.result)
+        assertEquals("2+1", calculatorState.value.input)
+        assertEquals("3", calculatorState.value.result)
     }
 
     @Test
     fun sum_of_more_than_two_numbers() = with(viewModel) {
         clickOne()
-        assertEquals("1", state.value.input)
-        assertEquals("", state.value.result)
+        assertEquals("1", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
 
         clickPlus()
-        assertEquals("1+", state.value.input)
-        assertEquals("", state.value.result)
+        assertEquals("1+", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
 
         clickTwo()
-        assertEquals("1+2", state.value.input)
-        assertEquals("", state.value.result)
+        assertEquals("1+2", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
 
         repeat(3) {
             clickPlus()
             calculator.assertPlusCalled(expectedTimes = 1)
-            assertEquals("3+", state.value.input)
-            assertEquals("", state.value.result)
+            assertEquals("3+", calculatorState.value.input)
+            assertEquals("", calculatorState.value.result)
         }
 
         clickOne()
-        assertEquals("3+1", state.value.input)
-        assertEquals("", state.value.result)
+        assertEquals("3+1", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
 
         clickZero()
-        assertEquals("3+10", state.value.input)
-        assertEquals("", state.value.result)
+        assertEquals("3+10", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
 
         repeat(3) {
             clickPlus()
             calculator.assertPlusCalled(expectedTimes = 2)
-            assertEquals("13+", state.value.input)
-            assertEquals("", state.value.result)
+            assertEquals("13+", calculatorState.value.input)
+            assertEquals("", calculatorState.value.result)
         }
 
         clickTwo()
-        assertEquals("13+2", state.value.input)
-        assertEquals("", state.value.result)
+        assertEquals("13+2", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
 
         repeat(3) {
             clickEquals()
             calculator.assertPlusCalled(expectedTimes = 3)
-            assertEquals("13+2", state.value.input)
-            assertEquals("15", state.value.result)
+            assertEquals("13+2", calculatorState.value.input)
+            assertEquals("15", calculatorState.value.result)
         }
     }
 
     @Test
     fun sum_after_equals() = with(viewModel) {
         clickOne()
-        assertEquals("1", state.value.input)
+        assertEquals("1", calculatorState.value.input)
 
         clickPlus()
-        assertEquals("1+", state.value.input)
+        assertEquals("1+", calculatorState.value.input)
 
         clickTwo()
-        assertEquals("1+2", state.value.input)
+        assertEquals("1+2", calculatorState.value.input)
 
         clickEquals()
-        assertEquals("1+2", state.value.input)
-        assertEquals("3", state.value.result)
+        assertEquals("1+2", calculatorState.value.input)
+        assertEquals("3", calculatorState.value.result)
 
         clickPlus()
-        assertEquals("3+", state.value.input)
-        assertEquals("", state.value.result)
+        assertEquals("3+", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
 
         clickOne()
-        assertEquals("3+1", state.value.input)
-        assertEquals("", state.value.result)
+        assertEquals("3+1", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
 
         clickEquals()
-        assertEquals("3+1", state.value.input)
-        assertEquals("4", state.value.result)
+        assertEquals("3+1", calculatorState.value.input)
+        assertEquals("4", calculatorState.value.result)
 
         clickPlus()
-        assertEquals("4+", state.value.input)
-        assertEquals("", state.value.result)
+        assertEquals("4+", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
 
         clickTwo()
-        assertEquals("4+2", state.value.input)
-        assertEquals("", state.value.result)
+        assertEquals("4+2", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
 
         clickPlus()
-        assertEquals("6+", state.value.input)
-        assertEquals("", state.value.result)
+        assertEquals("6+", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
 
         clickOne()
-        assertEquals("6+1", state.value.input)
-        assertEquals("", state.value.result)
+        assertEquals("6+1", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
 
         clickEquals()
-        assertEquals("6+1", state.value.input)
-        assertEquals("7", state.value.result)
+        assertEquals("6+1", calculatorState.value.input)
+        assertEquals("7", calculatorState.value.result)
     }
 
     @Test
     fun prevent_equals_not_at_the_end() = with(viewModel) {
         repeat(3) {
             clickEquals()
-            assertEquals("", state.value.input)
-            assertEquals("", state.value.result)
+            assertEquals("", calculatorState.value.input)
+            assertEquals("", calculatorState.value.result)
         }
 
         clickTwo()
-        assertEquals("2", state.value.input)
+        assertEquals("2", calculatorState.value.input)
 
         repeat(3) {
             clickEquals()
-            assertEquals("2", state.value.input)
-            assertEquals("", state.value.result)
+            assertEquals("2", calculatorState.value.input)
+            assertEquals("", calculatorState.value.result)
         }
 
         clickPlus()
-        assertEquals("2+", state.value.input)
+        assertEquals("2+", calculatorState.value.input)
 
         repeat(3) {
             clickEquals()
-            assertEquals("2+", state.value.input)
-            assertEquals("", state.value.result)
+            assertEquals("2+", calculatorState.value.input)
+            assertEquals("", calculatorState.value.result)
         }
 
         clickOne()
-        assertEquals("2+1", state.value.input)
+        assertEquals("2+1", calculatorState.value.input)
 
         repeat(3) {
             clickEquals()
-            assertEquals("2+1", state.value.input)
-            assertEquals("3", state.value.result)
+            assertEquals("2+1", calculatorState.value.input)
+            assertEquals("3", calculatorState.value.result)
         }
         calculator.assertPlusCalled(expectedTimes = 1)
     }
@@ -314,56 +307,101 @@ class MainViewModelTest {
     @Test
     fun minus_of_two_numbers() = with(viewModel) {
         clickOne()
-        assertEquals("1", state.value.input)
+        assertEquals("1", calculatorState.value.input)
 
         clickMinus()
-        assertEquals("1-", state.value.input)
+        assertEquals("1-", calculatorState.value.input)
 
         clickTwo()
-        assertEquals("1-2", state.value.input)
+        assertEquals("1-2", calculatorState.value.input)
 
         clickEquals()
-        assertEquals("1-2", state.value.input)
-        assertEquals("-1", state.value.result)
+        assertEquals("1-2", calculatorState.value.input)
+        assertEquals("-1", calculatorState.value.result)
     }
 
     @Test
     fun minus_sign_ahead() = with(viewModel) {
         clickMinus()
-        assertEquals("-", state.value.input)
+        assertEquals("-", calculatorState.value.input)
 
         clickOne()
-        assertEquals("-1", state.value.input)
+        assertEquals("-1", calculatorState.value.input)
 
         clickMinus()
-        assertEquals("-1-", state.value.input)
+        assertEquals("-1-", calculatorState.value.input)
 
         clickTwo()
-        assertEquals("-1-2", state.value.input)
+        assertEquals("-1-2", calculatorState.value.input)
 
         clickEquals()
-        assertEquals("-1-2", state.value.input)
-        assertEquals("-3", state.value.result)
+        assertEquals("-1-2", calculatorState.value.input)
+        assertEquals("-3", calculatorState.value.result)
     }
 
     @Test
     fun prevent_multiple_zeros_minus_operation() = with(viewModel) {
         repeat(3) {
             clickZero()
-            assertEquals("0", state.value.input)
+            assertEquals("0", calculatorState.value.input)
         }
 
         clickMinus()
-        assertEquals("0-", state.value.input)
+        assertEquals("0-", calculatorState.value.input)
 
         repeat(3) {
             clickZero()
-            assertEquals("0-0", state.value.input)
+            assertEquals("0-0", calculatorState.value.input)
         }
 
         clickEquals()
-        assertEquals("0-0", state.value.input)
-        assertEquals("0", state.value.result)
+        assertEquals("0-0", calculatorState.value.input)
+        assertEquals("0", calculatorState.value.result)
+    }
+
+    @Test
+    fun prevent_minus_zero() = with(viewModel) {
+        clickMinus()
+        assertEquals("-", calculatorState.value.input)
+
+        clickZero()
+        assertEquals("-", calculatorState.value.input)
+
+        clickOne()
+        assertEquals("-1", calculatorState.value.input)
+
+        clickPlus()
+        assertEquals("-1+", calculatorState.value.input)
+
+        clickTwo()
+        assertEquals("-1+2", calculatorState.value.input)
+
+        clickZero()
+        assertEquals("-1+20", calculatorState.value.input)
+
+        clickEquals()
+        assertEquals("-1+20", calculatorState.value.input)
+        assertEquals("19", calculatorState.value.result)
+    }
+
+    @Test
+    fun clear() = with(viewModel) {
+        clickZero()
+        assertEquals("0", calculatorState.value.input)
+
+        clickPlus()
+        assertEquals("0+", calculatorState.value.input)
+
+        clickTwo()
+        assertEquals("0+2", calculatorState.value.input)
+
+        clickEquals()
+        assertEquals("0+2", calculatorState.value.input)
+        assertEquals("2", calculatorState.value.result)
+
+        clickClear()
+        assertEquals("", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
     }
 }
 

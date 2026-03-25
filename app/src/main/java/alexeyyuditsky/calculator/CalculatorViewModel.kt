@@ -7,28 +7,28 @@ import kotlinx.coroutines.flow.update
 
 class CalculatorViewModel(
     private val calculator: Calculator = Calculator.Base(),
-) : ViewModel(), Actions {
-
-    private val mutableState = MutableStateFlow(State())
-    val state = mutableState.asStateFlow()
+) : ViewModel(), CalculatorActions {
 
     private var addToLeft = true
     private var left = ""
     private var right = ""
     private var operation = ""
 
+    private val mutableCalculatorState = MutableStateFlow(CalculatorState())
+    val calculatorState = mutableCalculatorState.asStateFlow()
+
     override fun clickZero() {
         if (addToLeft) {
-            if (left != "0") {
+            if (left != "0" && left != "-") {
                 left += "0"
-                mutableState.update { state ->
+                mutableCalculatorState.update { state ->
                     state.copy(input = left)
                 }
             }
         } else {
             if (right != "0") {
                 right += "0"
-                mutableState.update { state ->
+                mutableCalculatorState.update { state ->
                     state.copy(input = "$left$operation$right")
                 }
             }
@@ -42,7 +42,7 @@ class CalculatorViewModel(
             } else {
                 left += "1"
             }
-            mutableState.update { state ->
+            mutableCalculatorState.update { state ->
                 state.copy(input = left)
             }
         } else {
@@ -51,7 +51,7 @@ class CalculatorViewModel(
             } else {
                 right += "1"
             }
-            mutableState.update { state ->
+            mutableCalculatorState.update { state ->
                 state.copy(input = "$left$operation$right")
             }
         }
@@ -64,7 +64,7 @@ class CalculatorViewModel(
             } else {
                 left += "2"
             }
-            mutableState.update { state ->
+            mutableCalculatorState.update { state ->
                 state.copy(input = left)
             }
         } else {
@@ -73,7 +73,7 @@ class CalculatorViewModel(
             } else {
                 right += "2"
             }
-            mutableState.update { state ->
+            mutableCalculatorState.update { state ->
                 state.copy(input = "$left$operation$right")
             }
         }
@@ -81,7 +81,7 @@ class CalculatorViewModel(
 
     override fun clickPlus() {
         operation = "+"
-        mutableState.update { state ->
+        mutableCalculatorState.update { state ->
             if (state.input.isEmpty() || state.input.endsWith("+")) {
                 return
             } else if (left.isNotEmpty() && right.isNotEmpty()) {
@@ -100,7 +100,7 @@ class CalculatorViewModel(
 
     override fun clickMinus() {
         operation = "-"
-        mutableState.update { state ->
+        mutableCalculatorState.update { state ->
             if (state.input.isEmpty()) {
                 left = "-"
                 state.copy(input = left)
@@ -121,7 +121,7 @@ class CalculatorViewModel(
     }
 
     override fun clickEquals() {
-        mutableState.update { state ->
+        mutableCalculatorState.update { state ->
             if (
                 left.isEmpty() ||
                 right.isEmpty() ||
@@ -131,10 +131,18 @@ class CalculatorViewModel(
             val result = when (operation) {
                 "+" -> calculator.plus(left, right)
                 "-" -> calculator.minus(left, right)
-                else -> throw IllegalStateException()
+                else -> ""
             }
             operation = ""
             state.copy(result = result)
         }
+    }
+
+    override fun clickClear() {
+        left = ""
+        right = ""
+        operation = ""
+        addToLeft = true
+        mutableCalculatorState.update { CalculatorState() }
     }
 }

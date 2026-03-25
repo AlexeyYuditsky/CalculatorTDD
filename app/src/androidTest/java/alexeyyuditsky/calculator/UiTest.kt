@@ -360,4 +360,49 @@ class UiTest {
         assertInput(expected = "0-0")
         assertResult(expected = "0")
     }
+
+    @Test
+    fun prevent_minus_zero(): Unit = with(calculatorPage) {
+        clickMinus()
+        assertInput(expected = "-")
+
+        clickZero()
+        assertInput(expected = "-")
+
+        clickOne()
+        assertInput(expected = "-1")
+
+        clickPlus()
+        assertInput(expected = "-1+")
+
+        clickTwo()
+        assertInput(expected = "-1+2")
+
+        clickZero()
+        assertInput(expected = "-1+20")
+
+        clickEquals()
+        assertInput(expected = "-1+20")
+        assertResult(expected = "19")
+    }
+
+    @Test
+    fun clear(): Unit = with(calculatorPage) {
+        clickZero()
+        assertInput(expected = "0")
+
+        clickPlus()
+        assertInput(expected = "0+")
+
+        clickTwo()
+        assertInput(expected = "0+2")
+
+        clickEquals()
+        assertInput(expected = "0+2")
+        assertResult(expected = "2")
+
+        clickClear()
+        assertInput(expected = "")
+        assertResult(expected = "")
+    }
 }

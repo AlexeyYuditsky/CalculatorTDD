@@ -18,13 +18,13 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun CalculatorScreen(
-    state: State,
-    actions: Actions,
+    calculatorState: CalculatorState,
+    calculatorActions: CalculatorActions,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         Text(
-            text = state.input,
+            text = calculatorState.input,
             textAlign = TextAlign.Center,
             fontSize = 34.sp,
             modifier = Modifier
@@ -33,7 +33,7 @@ fun CalculatorScreen(
                 .testTag("input")
         )
         Text(
-            text = state.result,
+            text = calculatorState.result,
             textAlign = TextAlign.Center,
             fontSize = 34.sp,
             modifier = Modifier
@@ -46,34 +46,39 @@ fun CalculatorScreen(
             CalculatorButton(
                 text = "0",
                 testTag = "zero",
-                onClick = actions::clickZero
+                onClick = calculatorActions::clickZero
             )
             CalculatorButton(
                 text = "1",
                 testTag = "one",
-                onClick = actions::clickOne
+                onClick = calculatorActions::clickOne
             )
             CalculatorButton(
                 text = "2",
                 testTag = "two",
-                onClick = actions::clickTwo
+                onClick = calculatorActions::clickTwo
             )
         }
         Row {
             CalculatorButton(
                 text = "+",
                 testTag = "plus",
-                onClick = actions::clickPlus
+                onClick = calculatorActions::clickPlus
             )
             CalculatorButton(
                 text = "-",
                 testTag = "minus",
-                onClick = actions::clickMinus
+                onClick = calculatorActions::clickMinus
             )
             CalculatorButton(
                 text = "=",
                 testTag = "equals",
-                onClick = actions::clickEquals
+                onClick = calculatorActions::clickEquals
+            )
+            CalculatorButton(
+                text = "C",
+                testTag = "clear",
+                onClick = calculatorActions::clickClear
             )
         }
     }
@@ -83,8 +88,8 @@ fun CalculatorScreen(
 @Composable
 fun PreviewCalculatorScreen() = CalculatorTheme {
     CalculatorScreen(
-        state = State(input = "1+2", result = "3"),
-        actions = Actions.Empty
+        calculatorState = CalculatorState(input = "1+2", result = "3"),
+        calculatorActions = CalculatorActions.Empty
     )
 }
 

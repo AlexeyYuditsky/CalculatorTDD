@@ -26,12 +26,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun Calculator() = CalculatorTheme {
     val viewModel = viewModel<CalculatorViewModel>()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.calculatorState.collectAsStateWithLifecycle()
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         CalculatorScreen(
-            state = state,
-            actions = viewModel,
+            calculatorState = state,
+            calculatorActions = viewModel,
             modifier = Modifier.padding(innerPadding)
         )
     }

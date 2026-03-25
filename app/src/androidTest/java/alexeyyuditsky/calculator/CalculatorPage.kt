@@ -28,6 +28,9 @@ class CalculatorPage(rule: ComposeContentTestRule) {
     private val equals = rule.onNode(
         hasTestTag("equals") and hasText("=") and hasClickAction()
     )
+    private val clear = rule.onNode(
+        hasTestTag("clear") and hasText("C") and hasClickAction()
+    )
     private val input = rule.onNode(
         hasTestTag("input") and hasNoClickAction()
     )
@@ -46,6 +49,8 @@ class CalculatorPage(rule: ComposeContentTestRule) {
     fun clickMinus() = minus.performClick()
 
     fun clickEquals() = equals.performClick()
+
+    fun clickClear() = clear.performClick()
 
     fun assertInput(expected: String) = input.assertTextEquals(expected)
 

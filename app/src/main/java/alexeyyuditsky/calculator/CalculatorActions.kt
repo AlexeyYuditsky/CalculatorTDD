@@ -1,6 +1,6 @@
 package alexeyyuditsky.calculator
 
-interface Actions {
+interface CalculatorActions {
 
     fun clickZero()
     fun clickOne()
@@ -9,13 +9,15 @@ interface Actions {
     fun clickPlus()
     fun clickMinus()
     fun clickEquals()
+    fun clickClear()
 
-    object Empty : Actions {
+    object Empty : CalculatorActions {
         override fun clickZero() {}
         override fun clickOne() {}
         override fun clickTwo() {}
         override fun clickPlus() {}
         override fun clickMinus() {}
         override fun clickEquals() {}
+        override fun clickClear() {}
     }
 }
