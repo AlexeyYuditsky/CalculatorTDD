@@ -6,6 +6,14 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+/**
+ * N: number (1 - 9)
+ * 0: zero
+ * M: multiple repetitions
+ * MAX: max value
+ * C: clear data
+ * result: result of operation
+ */
 @RunWith(AndroidJUnit4::class)
 class UiTest {
 
@@ -14,6 +22,7 @@ class UiTest {
 
     private val calculatorPage = CalculatorPage(composeTestRule)
 
+    // 1. N + N = result
     @Test
     fun sum_of_two_numbers(): Unit = with(calculatorPage) {
         clickOne()
@@ -30,6 +39,7 @@ class UiTest {
         assertResult(expected = "3")
     }
 
+    // 2. N M + N M = result
     @Test
     fun sum_of_numbers_more_complex(): Unit = with(calculatorPage) {
         clickTwo()
@@ -64,6 +74,7 @@ class UiTest {
         assertResult(expected = "3300")
     }
 
+    // 3. N MAX + N MAX = result
     @Test
     fun sum_of_two_numbers_corner_case(): Unit = with(calculatorPage) {
         clickOne()
@@ -96,8 +107,9 @@ class UiTest {
         assertResult(expected = "3000000000")
     }
 
+    // 4. 0 M + 0 M = 0
     @Test
-    fun prevent_multiple_zeros_plus_operation(): Unit = with(calculatorPage) {
+    fun prevent_multiple_zeros_sum_operation(): Unit = with(calculatorPage) {
         repeat(3) {
             clickZero()
             assertInput(expected = "0")
@@ -116,6 +128,28 @@ class UiTest {
         assertResult(expected = "0")
     }
 
+    // 5. 0 M - 0 M = 0
+    @Test
+    fun prevent_multiple_zeros_diff_operation(): Unit = with(calculatorPage) {
+        repeat(3) {
+            clickZero()
+            assertInput(expected = "0")
+        }
+
+        clickMinus()
+        assertInput(expected = "0-")
+
+        repeat(3) {
+            clickZero()
+            assertInput(expected = "0-0")
+        }
+
+        clickEquals()
+        assertInput(expected = "0-0")
+        assertResult(expected = "0")
+    }
+
+    // 6. 0 N + 0 N = result
     @Test
     fun prevent_leading_zeros(): Unit = with(calculatorPage) {
         clickZero()
@@ -138,6 +172,33 @@ class UiTest {
         assertResult(expected = "3")
     }
 
+    // 7. - 0 N + N 0 = result
+    @Test
+    fun prevent_minus_zero(): Unit = with(calculatorPage) {
+        clickMinus()
+        assertInput(expected = "-")
+
+        clickZero()
+        assertInput(expected = "-")
+
+        clickOne()
+        assertInput(expected = "-1")
+
+        clickPlus()
+        assertInput(expected = "-1+")
+
+        clickTwo()
+        assertInput(expected = "-1+2")
+
+        clickZero()
+        assertInput(expected = "-1+20")
+
+        clickEquals()
+        assertInput(expected = "-1+20")
+        assertResult(expected = "19")
+    }
+
+    // 8. N + M N = result
     @Test
     fun prevent_multiple_plus_operation(): Unit = with(calculatorPage) {
         clickTwo()
@@ -156,6 +217,26 @@ class UiTest {
         assertResult(expected = "3")
     }
 
+    // 9. N - M N = result
+    @Test
+    fun prevent_multiple_minus_operation(): Unit = with(calculatorPage) {
+        clickTwo()
+        assertInput(expected = "2")
+
+        repeat(3) {
+            clickMinus()
+            assertInput(expected = "2-")
+        }
+
+        clickOne()
+        assertInput(expected = "2-1")
+
+        clickEquals()
+        assertInput(expected = "2-1")
+        assertResult(expected = "1")
+    }
+
+    // 10. + M N + N = result
     @Test
     fun prevent_leading_pluses(): Unit = with(calculatorPage) {
         repeat(3) {
@@ -177,6 +258,7 @@ class UiTest {
         assertResult(expected = "3")
     }
 
+    // 11. N + N + N M + N = result
     @Test
     fun sum_of_more_than_two_numbers(): Unit = with(calculatorPage) {
         clickOne()
@@ -222,6 +304,39 @@ class UiTest {
         }
     }
 
+    // 12. N - N - N M - N = result
+    @Test
+    fun diff_of_more_than_two_numbers(): Unit = with(calculatorPage) {
+        clickOne()
+        assertInput(expected = "1")
+
+        clickMinus()
+        assertInput(expected = "1-")
+
+        clickTwo()
+        assertInput(expected = "1-2")
+
+        clickMinus()
+        assertInput(expected = "-1-")
+
+        clickTwo()
+        assertInput(expected = "-1-2")
+
+        clickZero()
+        assertInput(expected = "-1-20")
+
+        clickMinus()
+        assertInput(expected = "-21-")
+
+        clickTwo()
+        assertInput(expected = "-21-2")
+
+        clickEquals()
+        assertInput(expected = "-21-2")
+        assertResult(expected = "-23")
+    }
+
+    // 13. N + N = result + N = result + N + N = result
     @Test
     fun sum_after_equals(): Unit = with(calculatorPage) {
         clickOne()
@@ -270,6 +385,50 @@ class UiTest {
         assertResult(expected = "7")
     }
 
+    // 14. N - N = result - N = result - N - N = result
+    @Test
+    fun diff_after_equals(): Unit = with(calculatorPage) {
+        clickOne()
+        assertInput(expected = "1")
+
+        clickMinus()
+        assertInput(expected = "1-")
+
+        clickTwo()
+        assertInput(expected = "1-2")
+
+        clickEquals()
+        assertInput(expected = "1-2")
+        assertResult(expected = "-1")
+
+        clickMinus()
+        assertInput(expected = "-1-")
+
+        clickOne()
+        assertInput(expected = "-1-1")
+
+        clickEquals()
+        assertInput(expected = "-1-1")
+        assertResult(expected = "-2")
+
+        clickMinus()
+        assertInput(expected = "-2-")
+
+        clickTwo()
+        assertInput(expected = "-2-2")
+
+        clickMinus()
+        assertInput(expected = "-4-")
+
+        clickOne()
+        assertInput(expected = "-4-1")
+
+        clickEquals()
+        assertInput(expected = "-4-1")
+        assertResult(expected = "-5")
+    }
+
+    // 15. = M N = M + = M N = M result
     @Test
     fun prevent_equals_not_at_the_end(): Unit = with(calculatorPage) {
         repeat(3) {
@@ -306,6 +465,44 @@ class UiTest {
         }
     }
 
+    // 16. =M N =M - =M N = M result
+    @Test
+    fun prevent_equals_after_minus(): Unit = with(calculatorPage) {
+        repeat(3) {
+            clickEquals()
+            assertInput(expected = "")
+            assertResult(expected = "")
+        }
+
+        clickTwo()
+        assertInput(expected = "2")
+
+        repeat(3) {
+            clickEquals()
+            assertInput(expected = "2")
+            assertResult(expected = "")
+        }
+
+        clickMinus()
+        assertInput(expected = "2-")
+
+        repeat(3) {
+            clickEquals()
+            assertInput(expected = "2-")
+            assertResult(expected = "")
+        }
+
+        clickOne()
+        assertInput(expected = "2-1")
+
+        repeat(3) {
+            clickEquals()
+            assertInput(expected = "2-1")
+            assertResult(expected = "1")
+        }
+    }
+
+    // 17. N - N = result
     @Test
     fun diff_of_two_numbers(): Unit = with(calculatorPage) {
         clickOne()
@@ -322,6 +519,7 @@ class UiTest {
         assertResult(expected = "-1")
     }
 
+    // 18. - N - N = result
     @Test
     fun minus_sign_ahead(): Unit = with(calculatorPage) {
         clickMinus()
@@ -341,51 +539,7 @@ class UiTest {
         assertResult(expected = "-3")
     }
 
-    @Test
-    fun prevent_multiple_zeros_minus_operation(): Unit = with(calculatorPage) {
-        repeat(3) {
-            clickZero()
-            assertInput(expected = "0")
-        }
-
-        clickMinus()
-        assertInput(expected = "0-")
-
-        repeat(3) {
-            clickZero()
-            assertInput(expected = "0-0")
-        }
-
-        clickEquals()
-        assertInput(expected = "0-0")
-        assertResult(expected = "0")
-    }
-
-    @Test
-    fun prevent_minus_zero(): Unit = with(calculatorPage) {
-        clickMinus()
-        assertInput(expected = "-")
-
-        clickZero()
-        assertInput(expected = "-")
-
-        clickOne()
-        assertInput(expected = "-1")
-
-        clickPlus()
-        assertInput(expected = "-1+")
-
-        clickTwo()
-        assertInput(expected = "-1+2")
-
-        clickZero()
-        assertInput(expected = "-1+20")
-
-        clickEquals()
-        assertInput(expected = "-1+20")
-        assertResult(expected = "19")
-    }
-
+    // 19. N + N = result C
     @Test
     fun clear(): Unit = with(calculatorPage) {
         clickZero()

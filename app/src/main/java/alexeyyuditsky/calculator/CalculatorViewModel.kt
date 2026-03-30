@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class CalculatorViewModel(
-    private val calculator: Calculator = Calculator.Base(),
+    private val calculator: Calculator = Calculator.create(),
 ) : ViewModel(), CalculatorActions {
 
     private var addToLeft = true
@@ -85,7 +85,7 @@ class CalculatorViewModel(
             if (state.input.isEmpty() || state.input.endsWith("+")) {
                 return
             } else if (left.isNotEmpty() && right.isNotEmpty()) {
-                left = calculator.plus(left, right)
+                left = calculator.sum(left, right)
                 right = ""
                 state.copy(
                     input = "${left}+",
@@ -107,7 +107,7 @@ class CalculatorViewModel(
             } else if (state.input.endsWith("-")) {
                 return
             } else if (left.isNotEmpty() && right.isNotEmpty()) {
-                left = calculator.minus(left, right)
+                left = calculator.diff(left, right)
                 right = ""
                 state.copy(
                     input = "${left}-",
@@ -129,8 +129,8 @@ class CalculatorViewModel(
             ) return
 
             val result = when (operation) {
-                "+" -> calculator.plus(left, right)
-                "-" -> calculator.minus(left, right)
+                "+" -> calculator.sum(left, right)
+                "-" -> calculator.diff(left, right)
                 else -> ""
             }
             operation = ""

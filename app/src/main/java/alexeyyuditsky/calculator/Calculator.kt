@@ -4,16 +4,20 @@ import java.math.BigInteger
 
 interface Calculator {
 
-    fun plus(left: String, right: String): String
+    fun sum(left: String, right: String): String
 
-    fun minus(left: String, right: String): String
+    fun diff(left: String, right: String): String
 
-    class Base : Calculator {
-
-        override fun plus(left: String, right: String): String =
-            (BigInteger(left) + BigInteger(right)).toString()
-
-        override fun minus(left: String, right: String): String =
-            (BigInteger(left) - BigInteger(right)).toString()
+    companion object {
+        fun create(): Calculator = DefaultCalculator()
     }
+}
+
+internal class DefaultCalculator : Calculator {
+
+    override fun sum(left: String, right: String): String =
+        (BigInteger(left) + BigInteger(right)).toString()
+
+    override fun diff(left: String, right: String): String =
+        (BigInteger(left) - BigInteger(right)).toString()
 }

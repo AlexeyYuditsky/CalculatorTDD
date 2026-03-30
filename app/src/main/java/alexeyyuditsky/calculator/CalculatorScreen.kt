@@ -1,6 +1,7 @@
 package alexeyyuditsky.calculator
 
 import alexeyyuditsky.calculator.ui.theme.CalculatorTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,7 +23,10 @@ fun CalculatorScreen(
     calculatorActions: CalculatorActions,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier.fillMaxSize(),
+    ) {
         Text(
             text = calculatorState.input,
             textAlign = TextAlign.Center,

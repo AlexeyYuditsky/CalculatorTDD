@@ -12,12 +12,12 @@ interface CalculatorActions {
     fun clickClear()
 
     object Empty : CalculatorActions {
-        override fun clickZero() {}
-        override fun clickOne() {}
-        override fun clickTwo() {}
-        override fun clickPlus() {}
-        override fun clickMinus() {}
-        override fun clickEquals() {}
-        override fun clickClear() {}
+        override fun clickZero() = Unit
+        override fun clickOne() = Unit
+        override fun clickTwo() = Unit
+        override fun clickPlus() = Unit
+        override fun clickMinus() = Unit
+        override fun clickEquals() = Unit
+        override fun clickClear() = Unit
     }
 }
