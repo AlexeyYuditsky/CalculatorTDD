@@ -85,12 +85,22 @@ class CalculatorViewModel(
             if (state.input.isEmpty() || state.input.endsWith("+")) {
                 return
             } else if (left.isNotEmpty() && right.isNotEmpty()) {
-                left = calculator.sum(left, right)
+                left = if (state.input.contains("+")) {
+                    calculator.sum(left, right)
+                } else {
+                    calculator.diff(left, right)
+                }
                 right = ""
                 state.copy(
                     input = "${left}+",
                     result = ""
                 )
+            } else if (state.input == "-") {
+                left = ""
+                state.copy(input = "")
+            } else if (state.input.endsWith("-")) {
+                left = state.input.dropLast(1)
+                state.copy(input = "$left+")
             } else {
                 addToLeft = false
                 state.copy(input = "${state.input}+")
@@ -107,7 +117,11 @@ class CalculatorViewModel(
             } else if (state.input.endsWith("-")) {
                 return
             } else if (left.isNotEmpty() && right.isNotEmpty()) {
-                left = calculator.diff(left, right)
+                left = if (state.input.contains("+")) {
+                    calculator.sum(left, right)
+                } else {
+                    calculator.diff(left, right)
+                }
                 right = ""
                 state.copy(
                     input = "${left}-",

@@ -1,6 +1,6 @@
 package alexeyyuditsky.calculator
 
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Rule
 import org.junit.Test
@@ -519,11 +519,13 @@ class UiTest {
         assertResult(expected = "-1")
     }
 
-    // 18. - N - N = result
+    // 18. -M N - N = result
     @Test
     fun minus_sign_ahead(): Unit = with(calculatorPage) {
-        clickMinus()
-        assertInput(expected = "-")
+        repeat(3) {
+            clickMinus()
+            assertInput(expected = "-")
+        }
 
         clickOne()
         assertInput(expected = "-1")
@@ -539,7 +541,45 @@ class UiTest {
         assertResult(expected = "-3")
     }
 
-    // 19. N + N = result C
+    // 19. -+ N -+ N -+ N = result
+    @Test
+    fun change_minus_to_plus(): Unit = with(calculatorPage) {
+        clickMinus()
+        assertInput(expected = "-")
+
+        clickPlus()
+        assertInput(expected = "")
+
+        clickTwo()
+        assertInput(expected = "2")
+
+        clickMinus()
+        assertInput(expected = "2-")
+
+        clickPlus()
+        assertInput(expected = "2+")
+
+        clickOne()
+        assertInput(expected = "2+1")
+
+        clickMinus()
+        assertInput(expected = "3-")
+        assertResult(expected = "")
+
+        clickPlus()
+        assertInput(expected = "3+")
+        assertResult(expected = "")
+
+        clickZero()
+        assertInput(expected = "3+0")
+        assertResult(expected = "")
+
+        clickEquals()
+        assertInput(expected = "3+0")
+        assertResult(expected = "3")
+    }
+
+    // 20. N + N = result C
     @Test
     fun clear(): Unit = with(calculatorPage) {
         clickZero()

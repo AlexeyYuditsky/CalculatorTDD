@@ -516,6 +516,43 @@ class MainViewModelTest {
     }
 
     @Test
+    fun change_minus_to_plus(): Unit = with(viewModel) {
+        clickMinus()
+        assertEquals("-", calculatorState.value.input)
+
+        clickPlus()
+        assertEquals("", calculatorState.value.input)
+
+        clickTwo()
+        assertEquals("2", calculatorState.value.input)
+
+        clickMinus()
+        assertEquals("2-", calculatorState.value.input)
+
+        clickPlus()
+        assertEquals("2+", calculatorState.value.input)
+
+        clickOne()
+        assertEquals("2+1", calculatorState.value.input)
+
+        clickMinus()
+        assertEquals("3-", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
+
+        clickPlus()
+        assertEquals("3+", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
+
+        clickZero()
+        assertEquals("3+0", calculatorState.value.input)
+        assertEquals("", calculatorState.value.result)
+
+        clickEquals()
+        assertEquals("3+0", calculatorState.value.input)
+        assertEquals("3", calculatorState.value.result)
+    }
+
+    @Test
     fun clear() = with(viewModel) {
         clickZero()
         assertEquals("0", calculatorState.value.input)
