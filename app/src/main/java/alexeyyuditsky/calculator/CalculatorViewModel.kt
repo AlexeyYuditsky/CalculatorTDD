@@ -6,157 +6,51 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class CalculatorViewModel(
-    private val calculator: Calculator = Calculator.create(),
-) : ViewModel(), CalculatorActions {
+    private val calculator: Calculator = DefaultCalculator(),
+) : ViewModel(), CalculatorActions, CalculatorUpdateCallback {
 
-    private var addToLeft = true
-    private var left = ""
-    private var right = ""
-    private var operation = ""
+    private var calculationState: CalculationState = DefineLeftPart()
+    private var calculationParts = CalculationParts()
 
     private val mutableCalculatorState = MutableStateFlow(CalculatorState())
     val calculatorState = mutableCalculatorState.asStateFlow()
 
-    override fun clickZero() {
-        if (addToLeft) {
-            if (left != "0" && left != "-") {
-                left += "0"
-                mutableCalculatorState.update { state ->
-                    state.copy(input = left)
-                }
-            }
-        } else {
-            if (right != "0") {
-                right += "0"
-                mutableCalculatorState.update { state ->
-                    state.copy(input = "$left$operation$right")
-                }
-            }
-        }
+    override fun clickZero() =
+        calculationState.handleZero(calculationParts, this)
+
+    override fun clickOne() =
+        calculationState.handleNumber("1", calculationParts, this)
+
+    override fun clickTwo() =
+        calculationState.handleNumber("2", calculationParts, this)
+
+    override fun clickPlus() =
+        calculationState.handlePlus(calculator, calculationParts, this)
+
+    override fun clickMinus() =
+        calculationState.handleMinus(calculator, calculationParts, this)
+
+    override fun clickEquals() =
+        calculationState.handleEquals(calculator, calculationParts, this)
+
+    override fun clickClear() =
+        calculationState.handleClear(calculationParts, this)
+
+    override fun updateCalculationParts(calculationParts: CalculationParts) {
+        this.calculationParts = calculationParts
     }
 
-    override fun clickOne() {
-        if (addToLeft) {
-            if (left == "0") {
-                left = "1"
-            } else {
-                left += "1"
-            }
-            mutableCalculatorState.update { state ->
-                state.copy(input = left)
-            }
-        } else {
-            if (right == "0") {
-                right = "1"
-            } else {
-                right += "1"
-            }
-            mutableCalculatorState.update { state ->
-                state.copy(input = "$left$operation$right")
-            }
-        }
+    override fun updateCalculationState(calculationState: CalculationState) {
+        this.calculationState = calculationState
     }
 
-    override fun clickTwo() {
-        if (addToLeft) {
-            if (left == "0") {
-                left = "2"
-            } else {
-                left += "2"
-            }
-            mutableCalculatorState.update { state ->
-                state.copy(input = left)
-            }
-        } else {
-            if (right == "0") {
-                right = "2"
-            } else {
-                right += "2"
-            }
-            mutableCalculatorState.update { state ->
-                state.copy(input = "$left$operation$right")
-            }
-        }
-    }
-
-    override fun clickPlus() {
-        operation = "+"
+    override fun updateCalculationInput() =
         mutableCalculatorState.update { state ->
-            if (state.input.isEmpty() || state.input.endsWith("+")) {
-                return
-            } else if (left.isNotEmpty() && right.isNotEmpty()) {
-                left = if (state.input.contains("+")) {
-                    calculator.sum(left, right)
-                } else {
-                    calculator.diff(left, right)
-                }
-                right = ""
-                state.copy(
-                    input = "${left}+",
-                    result = ""
-                )
-            } else if (state.input == "-") {
-                left = ""
-                state.copy(input = "")
-            } else if (state.input.endsWith("-")) {
-                left = state.input.dropLast(1)
-                state.copy(input = "$left+")
-            } else {
-                addToLeft = false
-                state.copy(input = "${state.input}+")
-            }
+            state.copy(input = calculationParts.value)
         }
-    }
 
-    override fun clickMinus() {
-        operation = "-"
+    override fun updateCalculationResult(calculationResult: String) =
         mutableCalculatorState.update { state ->
-            if (state.input.isEmpty()) {
-                left = "-"
-                state.copy(input = left)
-            } else if (state.input.endsWith("-")) {
-                return
-            } else if (left.isNotEmpty() && right.isNotEmpty()) {
-                left = if (state.input.contains("+")) {
-                    calculator.sum(left, right)
-                } else {
-                    calculator.diff(left, right)
-                }
-                right = ""
-                state.copy(
-                    input = "${left}-",
-                    result = ""
-                )
-            } else {
-                addToLeft = false
-                state.copy(input = "${state.input}-")
-            }
+            state.copy(result = calculationResult)
         }
-    }
-
-    override fun clickEquals() {
-        mutableCalculatorState.update { state ->
-            if (
-                left.isEmpty() ||
-                right.isEmpty() ||
-                state.result.isNotEmpty()
-            ) return
-
-            val result = when (operation) {
-                "+" -> calculator.sum(left, right)
-                "-" -> calculator.diff(left, right)
-                else -> ""
-            }
-            operation = ""
-            state.copy(result = result)
-        }
-    }
-
-    override fun clickClear() {
-        left = ""
-        right = ""
-        operation = ""
-        addToLeft = true
-        mutableCalculatorState.update { CalculatorState() }
-    }
 }

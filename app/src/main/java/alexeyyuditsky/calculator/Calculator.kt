@@ -7,13 +7,9 @@ interface Calculator {
     fun sum(left: String, right: String): String
 
     fun diff(left: String, right: String): String
-
-    companion object {
-        fun create(): Calculator = DefaultCalculator()
-    }
 }
 
-internal class DefaultCalculator : Calculator {
+class DefaultCalculator : Calculator {
 
     override fun sum(left: String, right: String): String =
         (BigInteger(left) + BigInteger(right)).toString()
